@@ -1,0 +1,460 @@
+{% extends 'layout.html' %}
+{% block title %}Ver Residente{% endblock %}
+{% block content %}
+
+<div>
+    <h1>Residentes</h1>
+    <br>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-info" role="alert" style="text-align: center;">
+        {{message}} <i class="fa-solid fa-thumbs-up"></i>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        </button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <div class="row">
+        <div class="col-md-4 ">
+            <a href="{{url_for('AgregarResidente')}}" class="saber">Agregar Residente</a>
+        </div>
+        <div class="col-md-4 ms-auto">
+            <form class="d-flex" role="search" action="/BuscarResidente" method="POST">
+                <input type="hidden" name="csrf_token" value="{{csrf_token() }}">
+                <input class="form-control mr-sm-2 border border-dark" type="text" placeholder="Buscar" name="busqueda"
+                    aria-label="Search">
+                <button class="btn btn-n btn-outline-success my-2 my-sm-0"
+                    style="background-color: transparent; border-color: black;" type="submit" value="submit"><img
+                        src="/static/img/buscar.svg" height="25px" width="25px"></button>
+            </form>
+        </div>
+    </div>
+    <br>
+    <table class="table">
+        <thead class="table" style="background-color: #006a94; color: white;">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Nombre(s)</th>
+                <th scope="col">Apellido Paterno</th>
+                <th scope="col">Apellido Materno</th>
+                <th scope="col">Calle</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {% for r in residente %}
+            <tr>
+                <th scope="row">{{r.idRe}}</th>
+                <td>{{r.nombreRe}}</td>
+                <td>{{r.apellidoPRe}}</td>
+                <td>{{r.apellidoMRe}}</td>
+                <td>{{r.calleRe}}</td>
+                <td>
+                    <div class="btn-group dropend">
+                        <button type="button" class="btn btn-g btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Acciones
+                        </button>
+                        <ul class="dropdown-menu">
+                            {% if session['userid'] == 3 %}
+                            <li>
+                                <a class="dropdown-item btn-ac" href="/HistorialPagos/{{r.idRe}}"
+                                    target="_blank"><button type="button"
+                                        class="btn btn-a btn-outline-dark btn-sm btn-bd-primary"><img
+                                            src="/static/img/DOLLAR 2@2x.png" alt="Ver Expediente"
+                                            width="23px"></button>
+                                    Ver Historial de Pagos</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item btn-ac" href="/VerExpedienteResidente/{{r.idRe}}"
+                                    target="_blank"><button type="button"
+                                        class="btn btn-a btn-outline-dark btn-sm btn-bd-primary"><img
+                                            src="/static/img/CARPETA 2@2x.png" alt="Ver Expediente"
+                                            width="23px"></button>
+                                    Ver Expediente</a>
+                            </li>
+                            {% else %}
+                            <li>
+                                <a class="dropdown-item btn-ac" data-bs-toggle="modal" href=""
+                                    data-bs-target="#confirmacionPa{{r.idRe}}"><button type="button"
+                                        class="btn btn-a btn-outline-dark btn-sm btn-bd-primary"><img
+                                            src="/static/img/PLUS 2@2x.png" alt="Ver Expediente" width="23px"></button>
+                                    Agregar Pago</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item btn-ac" data-bs-toggle="modal" href=""
+                                    data-bs-target="#confirmacionAct{{r.idRe}}"><button type="button"
+                                        class="btn btn-a btn-outline-dark btn-sm btn-bd-primary"><img
+                                            src="/static/img/LAPIZ 2@2x.png" alt="Ver Expediente" width="23px"></button>
+                                    Actualizar</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item btn-ac" href="/HistorialPagos/{{r.idRe}}"
+                                    target="_blank"><button type="button"
+                                        class="btn btn-a btn-outline-dark btn-sm btn-bd-primary"><img
+                                            src="/static/img/DOLLAR 2@2x.png" alt="Ver Expediente"
+                                            width="23px"></button>
+                                    Ver Historial de Pagos</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item btn-ac" href="/VerExpedienteResidente/{{r.idRe}}"
+                                    target="_blank"><button type="button"
+                                        class="btn btn-a btn-outline-dark btn-sm btn-bd-primary"><img
+                                            src="/static/img/CARPETA 2@2x.png" alt="Ver Expediente"
+                                            width="23px"></button>
+                                    Ver Expediente</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item btn-ac" data-bs-toggle="modal" href=""
+                                    data-bs-target="#eliminar{{r.idRe}}"><button type="button"
+                                        class="btn btn-a btn-outline-dark btn-sm btn-bd-primary"><img
+                                            src="/static/img/BASURA 2@2x.png" alt="Ver Expediente"
+                                            width="23px"></button> Eliminar</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+
+            <!-- MODAL -->
+            <!-- MODAL ELIMINAR -->
+            <div class="modal fade" id="eliminar{{r.idRe}}" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Eliminar</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/EliminarResidente" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{csrf_token() }}">
+                                <input type="hidden" name="idRe" value="{{r.idRe}}">
+                                <img src="/static/img/PELIGRO 2@2x.png" alt="Ver Expediente" width="80px"
+                                    style=" float: left; margin-right: 30px; margin-left: 20px;">
+                                <p>
+                                    ¿Deseas dar de baja a este residente?
+                                <h4 style="color: black;"> "{{r.apellidoPRe}} {{r.apellidoMRe}}
+                                    {{r.nombreRe}}"
+                                </h4>
+                                </p>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light botoncolor"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-light botoncolor">Aceptar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL ACTUALIZAR -->
+            <div class="modal fade" id="confirmacionAct{{r.idRe}}" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Confirmar</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="idRe" value="{{r.idRe}}">
+                            <img src="/static/img/ADVERTENCIA 2@2x.png" alt="Ver Expediente" width="80px"
+                                style=" float: left; margin-right: 30px; margin-left: 20px;">
+                            <p>
+                                ¿Estas seguro que desea modificar a este residente?
+                            <h4 style="color: black;"> "{{r.apellidoPRe}} {{r.apellidoMRe}}
+                                {{r.nombreRe}}"
+                            </h4>
+                            </p>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light botoncolor"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button class="btn btn-light botoncolor" data-bs-target="#actualizar{{r.idRe}}"
+                                    data-bs-toggle="modal">Aceptar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade modal-lg" id="actualizar{{r.idRe}}" data-bs-backdrop="static"
+                data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Actualizar Datos Residente</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/ActualizarResidente" method="POST" enctype="multipart/form-data">
+                                <input type="hidden" name="csrf_token" value="{{csrf_token() }}">
+                                <input type="hidden" name="idRe" value="{{r.idRe}}">
+                                <h2 style="text-align: center;">Datos Personales</h2>
+                                <br>
+                                <div class="container text-center">
+                                    <div class="row align-items-start">
+                                        <div class="col">
+                                            <label for="validationDefault01" class="form-label">Nombre(s)</label>
+                                            <input name="nombreRe" type="text" class="form-control border border-dark"
+                                                id="validationDefault01" value="{{r.nombreRe}}" />
+                                        </div>
+                                        <div class="col">
+                                            <label for="validationDefault01" class="form-label">Apellido
+                                                Paterno</label>
+                                            <input name="apellidoPRe" type="text"
+                                                class="form-control border border-dark" id="validationDefault01"
+                                                value="{{r.apellidoPRe}}" />
+                                        </div>
+                                        <div class="col">
+                                            <label for="validationDefault01" class="form-label">Apellido
+                                                Materno</label>
+                                            <input name="apellidoMRe" type="text"
+                                                class="form-control border border-dark" id="validationDefault01"
+                                                value="{{r.apellidoMRe}}" />
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row justify-content-evenly">
+                                        <div class="col-4">
+                                            <label for="validationDefault01" class="form-label">Telefono
+                                                Fijo</label>
+                                            <input name="telCasaRe" type="text" class="form-control border border-dark"
+                                                id="validationDefault01" value="{{r.telCasaRe}}" />
+                                        </div>
+                                        <div class="col-4">
+                                            <label for="validationDefault01" class="form-label">Telefono
+                                                Celular</label>
+                                            <input name="telCelRe" type="text" class="form-control border border-dark"
+                                                id="validationDefault01" value="{{r.telCelRe}}" />
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row justify-content-evenly">
+                                        <div class="col-4">
+                                            <label for="validationDefault02" class="form-label">Sexo</label>
+                                            <select name="sexoAd" class="form-select border border-dark"
+                                                aria-label="Default select example">
+                                                <option value="{{r.sexoRe}}">Selecciona Uno...</option>
+                                                <option value="Hombre">Hombre</option>
+                                                <option value="Mujer">Mujer</option>
+                                                <option value="Otro">Prefiero no decirlo</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-4">
+                                            <label for="validationDefault01" class="form-label">Edad</label>
+                                            <input name="edadRe" type="number" class="form-control border border-dark"
+                                                id="validationDefault01" value="{{r.edadRe}}" />
+                                        </div>
+                                    </div>
+                                    <br><br>
+                                    <h2 style="text-align: center;">Direccion</h2>
+                                    <div class="row align-items-start">
+                                        <div class="col">
+                                            <label for="validationDefault01" class="form-label">Calle</label>
+                                            <input name="calleRe" type="text" class="form-control border border-dark"
+                                                id="validationDefault01" value="{{r.calleRe}}" />
+                                        </div>
+                                        <div class="col">
+                                            <label for="validationDefault01" class="form-label">Numero
+                                                Exterior</label>
+                                            <input name="numExtRe" type="text" class="form-control border border-dark"
+                                                id="validationDefault01" value="{{r.numExtRe}}" />
+                                        </div>
+                                        <div class="col">
+                                            <label for="validationDefault01" class="form-label">Codigo
+                                                Postal</label>
+                                            <input name="cpRe" type="text" class="form-control border border-dark"
+                                                id="validationDefault01" value="{{r.cpRe}}" />
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row justify-content-evenly">
+                                        <div class="col-4">
+                                            <label for="validationDefault01" class="form-label">Estado</label>
+                                            <input name="estadoRe" type="text" class="form-control border border-dark"
+                                                id="validationDefault01" value="{{r.estadoRe}}" />
+                                        </div>
+                                        <div class="col-4">
+                                            <label for="validationDefault01" class="form-label">Municipio</label>
+                                            <input name="municipioRe" type="text"
+                                                class="form-control border border-dark" id="validationDefault01"
+                                                value="{{r.municipioRe}}" />
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light botoncolor"
+                                            data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-light botoncolor">Aceptar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL AGREGAR PAGO -->
+            <div class="modal fade" id="confirmacionPa{{r.idRe}}" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Confirmar</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="idRe" value="{{r.idRe}}">
+                            <i class="fa-solid fa-triangle-exclamation iconogrande"
+                                style="font-size: 80px; color: gold; float: left; margin-right: 30px; margin-left: 20px;"></i>
+                            <p>
+                                ¿Estas seguro que desea agregar pago a este residente?
+                            <h4 style="color: black;"> "{{r.apellidoPRe}} {{r.apellidoMRe}}
+                                {{r.nombreRe}}"
+                            </h4>
+                            </p>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light botoncolor"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button class="btn btn-light botoncolor" data-bs-target="#agregarPago{{r.idRe}}"
+                                    data-bs-toggle="modal">Aceptar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade modal-lg" id="agregarPago{{r.idRe}}" aria-hidden="true"
+                aria-labelledby="staticBackdropLabel" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Agregar Pago</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/AgregarPago" method="POST" enctype="multipart/form-data">
+                                <input type="hidden" name="csrf_token" value="{{csrf_token() }}">
+                                <input type="hidden" name="idRe" value="{{r.idRe}}">
+                                <h2 style="text-align: center;">Informacion Pago</h2>
+                                <br>
+                                <div class="container text-center">
+                                    <div class="row align-items-start">
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="" class="form-label"></label>
+                                                <input name="" type="hidden" class="form-control" id="" value="" />
+                                            </div>
+                                            {%for m in monto %}
+                                            <div class="col align-self-start">
+                                                <h5><label for="validationDefault01" class="form-label">Monto a
+                                                        pagar</label></h5>
+                                                <h5>${{m.nuevoMonto}}</h5>
+                                                <input name="monto" type="hidden" class="form-control"
+                                                    id="validationDefault01" value="{{m.nuevoMonto}}" />
+                                            </div>
+                                            {%endfor%}
+                                            <div class="col">
+                                                <label for="" class="form-label"></label>
+                                                <input name="" type="hidden" class="form-control" id="" value="" />
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <br>
+                                        <br>
+                                        <br>
+                                        <div class="row justify-content-evenly">
+                                            <div class="col-sm-5 col-md-6">
+                                                <h6>
+                                                    <label for="validationDefault01" class="form-label">Nombre del que
+                                                        Representa la casa
+                                                    </label>
+                                                </h6>
+                                                <p>{{r.nombreRe}} {{r.apellidoPRe}} {{r.apellidoMRe}}</p>
+                                            </div>
+                                            <div class="col-sm-5 offset-sm-2 col-md-6 offset-md-0">
+                                                <h6>
+                                                    <label for="validationDefault01" class="form-label">Direccion
+                                                    </label>
+                                                </h6>
+                                                <p>{{r.calleRe}} #{{r.numExtRe}} CP: {{r.cpRe}}, {{r.estadoRe}},
+                                                    {{r.municipioRe}}</p>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <br>
+                                        <br>
+                                        <br>
+                                        <br>
+                                        <div class="row justify-content-evenly">
+                                            <div class="col-4">
+                                                <h6>
+                                                    <label for="validationDefault01" class="form-label">Nombre de quien
+                                                        pagó
+                                                    </label>
+                                                </h6>
+                                                <input name="nombrePPa" type="text"
+                                                    class="form-control border border-dark" id="validationDefault01"
+                                                    value=""
+                                                    pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{1,100}"
+                                                    title="Solo letras, de 1 a 100 Caracteres" required />
+                                            </div>
+                                            <div class="col-4">
+                                                <h6>
+                                                    <label for="validationDefault01" class="form-label">Metodo de Pago
+                                                    </label>
+                                                </h6>
+                                                <select name="metodoPa" class="form-select border border-dark"
+                                                    aria-label="Default select example" required>
+                                                    <option value="">Selecciona uno...</option>
+                                                    <option value="Efectivo">Efectivo</option>
+                                                    <option value="Tarjeta">Tarjeta Debito/Credito</option>
+                                                    <option value="Transferencia">Transferencia</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <br>
+                                        <br>
+                                        <div class="row justify-content-evenly">
+                                            <br>
+                                            <br>
+                                            <br>
+                                            <div class="mb-3">
+                                                <br>
+                                                <br>
+                                                <h6>
+                                                    <label for="exampleFormControlTextarea1"
+                                                        class="form-label ">Descripcion
+                                                        de Pago</label>
+                                                </h6>
+                                                <textarea name="descPa" class="form-control border border-dark"
+                                                    id="exampleFormControlTextarea1" rows="3" minlength="20"
+                                                    maxlength="200" title="Mnimo 20 Caracteres, Maximo 200"
+                                                    required></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-light botoncolor"
+                                                data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-light botoncolor">Aceptar</button>
+                                        </div>
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL????? -->
+
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

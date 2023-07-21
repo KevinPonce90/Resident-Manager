@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="icon" href="/static/img/Logo2.jpeg" style="width: 100%; height: 80%;">
+</head>
+
+<header class="navigation fixed-top">
+  <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-white layout">
+      <a class="navbar-brand order-1" href="/index">
+        <img class="img-fluid" width="160px" src="{{ url_for('static', filename= 'img/Logo2.jpeg') }}"
+          alt="Resident Manager">
+      </a>
+      <div class="collapse navbar-collapse text-center order-lg-2 order-3" id="navigation">
+        <ul class="navbar-nav mx-auto">
+          <!-- search -->
+          <form class="search-bar" role="search" action="/BuscarResidente" method="POST">
+            <input type="hidden" name="csrf_token" value="{{csrf_token() }}">
+            <input id="search-query" type="text" placeholder="Buscar" name="busqueda" aria-label="Search">
+            <button class="btn btn-outline-success my-sm-0" style="background-color: transparent; border-color: black;"
+              type="submit" value="submit"><img src="/static/img/buscar.svg" height="25px" width="25px"></button>
+          </form>
+        </ul>
+      </div>
+
+      {% if session['userid'] == 1 %}
+
+      <div class="order-3 order-lg-2 d-flex align-items-center" id="navigation">
+        <li class="list-unstyled nav-item dropdown" style="margin-right: 40px;">
+          <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <img src="/static/img/BARRAS 2@2x.png" height="35px" alt="">
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="/VerAdministrador">Administradores</a>
+
+            <a class="dropdown-item" href="/VerResidente">Residentes</a>
+
+            <a class="dropdown-item" href="/VerPagos">Pagos</a>
+
+            <a class="dropdown-item" href="/VerResidentesInactivos">Lista de Residentes Inactivos</a>
+
+            <a class="dropdown-item" href="/VerAdministradoresInactivos">Lista de Administradores Inactivos</a>
+          </div>
+        </li>
+        <li class="list-unstyled nav-item dropdown" style="padding-bottom: 30px;">
+          <a class="btn btn-a float-right mr-3 salir" href=" {{ url_for('logout') }}"
+            style="background-color: #006a94; color: white;">Cerrar sesion
+          </a>
+        </li>
+      </div>
+      {% else %}
+      {% if session['userid'] == 2 %}
+
+      <div class="order-3 order-lg-2 d-flex align-items-center" id="navigation">
+        <li class="list-unstyled nav-item dropdown" style="margin-right: 40px;">
+          <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <img src="/static/img/BARRAS 2@2x.png" height="35px" alt="">
+          </a>
+          <div class="dropdown-menu">
+
+            <a class="dropdown-item" href="/VerResidente">Residentes</a>
+
+            <a class="dropdown-item" href="/VerPagos">Pagos</a>
+
+            <a class="dropdown-item" href="/VerResidentesInactivos">Lista de Inactivos</a>
+          </div>
+        </li>
+        <li class="list-unstyled nav-item dropdown" style="padding-bottom: 30px;">
+          <a class="btn btn-a float-right mr-3 salir" href=" {{ url_for('logout') }}"
+            style="background-color: #006a94; color: white;">Cerrar sesion
+          </a>
+        </li>
+      </div>
+      {% else %}
+      {% if session['userid'] == 3 %}
+      <div class="order-3 order-lg-2 d-flex align-items-center" id="navigation">
+        <li class="list-unstyled nav-item dropdown" style="margin-right: 40px;">
+          <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <img src="/static/img/BARRAS 2@2x.png" height="35px" alt="">
+          </a>
+          <div class="dropdown-menu">
+
+            <a class="dropdown-item" href="/VerResidente">Residentes</a>
+
+            <a class="dropdown-item" href="/VerPagos">Pagos</a>
+
+            <a class="dropdown-item" href="/VerResidentesInactivos">Lista de Inactivos</a>
+          </div>
+        </li>
+        <li class="list-unstyled nav-item dropdown" style="padding-bottom: 30px;">
+          <a class="btn btn-a float-right mr-3 salir" href=" {{ url_for('logout') }}"
+            style="background-color: #006a94; color: white;">Cerrar sesion
+          </a>
+        </li>
+      </div>
+      {% endif %}
+      {% endif %}
+      {% endif %}
+    </nav>
+  </div>
+</header>
+
+<div class="margen">
+
+  <body>
+    {% block content %}{% endblock %}
+    <br>
+  </body>
+</div>
+<footer class="footer" style="background-color:#006a94;">
+  <p class="text-center" style="color: white;">&copy;Derechos Reservados KCA Company.</p>
+</footer>
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="https://kit.fontawesome.com/bcd45c0483.js" crossorigin="anonymous"></script>
+
+</html>

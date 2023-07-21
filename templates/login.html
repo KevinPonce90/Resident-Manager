@@ -1,0 +1,98 @@
+
+<!--HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
+
+{% extends '/layoutLogin.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename= 'css/login.css')
+    }}">
+{% endblock %}
+
+
+{% block body %}
+<div class="mensaje">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <br>
+    {% for messages in messages %}
+    <div class="alert alert-primary alert-dismissible" role="alert">
+        <strong> {{ messages }} </strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"
+            aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+</div>
+
+<div class="wrapper login">
+    <div class="container">
+        <div class="col-left">
+            <div class="login-text">
+                <b>
+                    <div id="txtsaludo"></div>
+                </b>
+            </div>
+        </div>
+        <div class="col-right">
+            <div class="login-form">
+                <h2>Inicio de sesión</h2>
+                <form action="{{ url_for('login') }}" method="post">
+                    <input type="hidden" name="csrf_token" value="{{csrf_token() }}">
+                    <p>
+                        <label>Correo Electronico<span>*</span></label>
+                        <input type="text" class="form-control" name="email"
+                            placeholder="Email" id="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"  required>
+                    </p>
+                    <p>
+                       {% if  intentos >= 1%} 
+                        <label>Contraseña<span>*</span></label>
+                        <input type="password" class="form-control"
+                            name="password" placeholder="Password" id="password"
+                            required pattern="^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$" required>
+                        {% endif %}
+                        
+                        {% if  intentos == 0%} 
+                        <label>Contraseña<span>*</span></label>
+                        <input type="password" class="form-control"
+                            name="password" placeholder="Password" id="password"
+                            required pattern="^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$" required disabled>
+                        {% endif %}
+                    </p>
+                    <p>
+                        {% if  intentos >= 1%}
+                        <input type="submit" value="Iniciar Sesión">
+                        {% endif %}
+
+                        {% if  intentos == 0%}
+                        <input type="submit" value="Iniciar Sesión" disabled>
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <input type="reset" value="Cancelar">
+                    </p>
+
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <ul class="bg-bubbles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
+
+
+{% endblock %}

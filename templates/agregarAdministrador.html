@@ -1,0 +1,112 @@
+{% extends 'layoutAgregar.html' %}
+{% block title %}Agregar Administrador{% endblock %}
+{% block content %}
+
+<div class="card text-center border-primary">
+    <div class="card-header" style="background-color: #006a94;">
+        <h3 style="color: #fff;">Registrar Administrador</h3>
+    </div>
+    <div class="card-body">
+        <form class="row g-3" action="/AgregarAdministrador" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{csrf_token() }}">
+            <div></div>
+            <div class="col-md-4">
+                <label for="validationDefault01" class="form-label">Nombre</label>
+                <input name="nombreAd" type="text" class="form-control border border-dark" id="validationDefault01"
+                    value="" required
+                    pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'\-]{2,35}" 
+                    title="Solo letras Minimo 2 Maximo 35"/>
+            </div>
+            <div class="col-md-4">
+                <label for="validationDefault02" class="form-label">Apellido Paterno</label>
+                <input name="apellidoPAd" type="text" class="form-control border border-dark" id="validationDefault02"
+                    value="" required
+                    pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'\-]{2,25}"
+                    title="Solo letras Minimo 2 Maximo 25"/>
+            </div>
+            <div class="col-md-4">
+                <label for="validationDefault02" class="form-label">Apellido Materno</label>
+                <input name="apellidoMAd" type="text" class="form-control border border-dark" id="validationDefault02"
+                    value="" required
+                    pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'\-]{2,25}"
+                    title="Solo letras Minimo 2 Maximo 25"/>
+            </div>
+            <div></div>
+            <div class="row justify-content-evenly">
+                <div class="col-4">
+                    <label for="validationDefault02" class="form-label">Correo</label>
+                    <input name="correoAd" type="email" class="form-control border border-dark" id="validationDefault02"
+                        value=""
+                        required
+                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" size="29"
+                        title="Correo inavlido"/>
+                </div>
+                <div class="col-4">
+                    <label for="validationDefault03" class="form-label">Contraseña</label>
+                    <input name="passAd" type="password" class="form-control border border-dark"
+                        id="validationDefault03"
+                        required 
+                        pattern="^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$"
+                        title="Escriba al menos 8 caracteres, 1 digito, 1 mayúscula, 1 minúscula, 1 carácter especial"/>
+                </div>
+            </div>
+            <div></div>
+            <div class="col-4">
+                <label for="validationDefault02" class="form-label">Sexo</label>
+                <select name="sexoAd" class="form-select border border-dark" aria-label="Default select example"
+                    required  title="Selecione una opción">
+                    <option value="">Selecciona Uno...</option>
+                    <option value="Hombre">Hombre</option>
+                    <option value="Mujer">Mujer</option>
+                    <option value="Otro">Prefiero no decirlo</option>
+                </select>
+            </div>
+            <div class="col-4">
+                <label for="validationDefault02" class="form-label">Edad</label>
+                <input name="edadAd" type="number" class="form-control border border-dark" id="validationDefault02"
+                    required min="18" max="100"/>
+            </div>
+            <div class="col-4">
+                <label for="validationDefault02" class="form-label">Privilegios</label>
+                <select name="priviAd" class="form-select border border-dark" aria-label="Default select example"
+                    required min="18" max="100">
+                    <option value="">Selecciona Uno...</option>
+                    <option value="1">Administrador</option>
+                    <option value="2">Junior</option>
+                    <option value="3">Auxiliar</option>
+                </select>
+            </div>
+            <div></div>
+            <div class="row justify-content-evenly">
+                <div class="col-4">
+                    <label for="validationDefault01" class="form-label">Telefono Casa</label>
+                    <input name="telCasaAd" type="text" class="form-control border border-dark"
+                        id="validationDefault01"
+                        required
+                        pattern="^(\+|00)[1-9][0-9 \-\(\)\.]{10,15}$"
+                        title="Numero con lada, maximo 16 digitos" />
+                </div>
+                <div class="col-4">
+                    <label for="validationDefault02" class="form-label">Telefono Celular</label>
+                    <input name="telCelAd" type="text" class="form-control border border-dark"
+                        id="validationDefault02"
+                        required
+                        pattern="^(\+|00)[1-9][0-9 \-\(\)\.]{10,15}$"
+                        title="Numero con lada, maximo 16 digitos" />
+                </div>
+            </div>
+            <div></div>
+            <div class="row">
+                <div class="col-auto me-auto"></div>
+                <div class="col-auto"><a href="/VerAdministrador">
+                        <button class="btn btn-secondary col-auto" type="button">Cancelar</button>
+                    </a></div>
+                <div class="col-auto">
+                    <button class="btn btn-primary col-auto" type="submit">Enviar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

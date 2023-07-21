@@ -1,0 +1,220 @@
+{% extends 'layout.html' %}
+{% block title %}Ver Pagos{% endblock %}
+{% block content %}
+
+<div>
+    <br>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-info" role="alert" style="text-align: center;">
+        {{message}} <i class="fa-solid fa-thumbs-up"></i>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        </button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <h1>Pagos</h1>
+    <br>
+    <div class="row">
+        {% if session['userid'] == 1 %}
+        <div class="col-md-4 ">
+            <a data-bs-toggle="modal" href="" data-bs-target="#confirmacionMonto" class="saber">Actualizar Monto
+                de Pago</a>
+        </div>
+        <div class="col-md-4 ms-auto">
+            <form class="d-flex" role="search" action="/BuscarPagos" method="POST">
+                <input type="hidden" name="csrf_token" value="{{csrf_token() }}">
+                <input class="form-control mr-sm-2 border border-dark" type="text" placeholder="Buscar" name="busqueda"
+                    aria-label="Search" required
+                    pattern="[a-z0-9AZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{1,100}"
+                    title="Solo letras o números, maximo 50 caracteres" />
+                <button class="btn btn-n btn-outline-success my-2 my-sm-0"
+                    style="background-color: transparent; border-color: black;" type="submit" value="submit"><img
+                        src="/static/img/buscar.svg" height="25px" width="25px"></button>
+            </form>
+        </div>
+        {% else %}
+        <div class="col-md-4">
+            <form class="d-flex" role="search" action="/BuscarPagos" method="POST">
+                <input type="hidden" name="csrf_token" value="{{csrf_token() }}">
+                <input class="form-control mr-sm-2 border border-dark" type="text" placeholder="Buscar" name="busqueda"
+                    aria-label="Search" required
+                    pattern="[a-z0-9AZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{1,100}"
+                    title="Solo letras o números, maximo 50 caracteres" />
+                <button class="btn btn-n btn-outline-success my-2 my-sm-0"
+                    style="background-color: transparent; border-color: black;" type="submit" value="submit"><img
+                        src="/static/img/buscar.svg" height="25px" width="25px"></button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    <br>
+
+    <table class="table">
+        <thead class="table" style="background-color: #006a94; color: white;">
+            <tr>
+                <th scope="col">Nombre Residente</th>
+                <th scope="col">Nombre Quien Pago</th>
+                <th scope="col">Nombre Admin</th>
+                <th scope="col">Monto</th>
+                <th scope="col">Fecha y Hora de Pago</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {% for p in pagos %}
+            <tr>
+                <td>{{p.nombreRe}} {{p.apellidoPRe}} {{p.apellidoMRe}}</td>
+                <td>{{p.nombrePPa}}</td>
+                <td>{{p.nombreAd}}</td>
+                <td>${{p.montoPagos}}</td>
+                <td>{{p.fechaPagos}} - {{p.horaPagos}}</td>
+                <td>
+                    <div class="btn-group dropend">
+                        <button type="button" class="btn btn-g btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Acciones
+                        </button>
+                        <ul class="dropdown-menu">
+                            {% if session['userid'] == 2 or session['userid'] == 3 %}
+                            <li>
+                                <a class="dropdown-item btn-ac" href="/ReciboPago/{{p.idPa}}" target="_blank"><button
+                                        type="button" class="btn btn-a btn-outline-dark btn-sm btn-bd-primary"><img
+                                            src="/static/img/PDF 2@2x.png" alt="Ver Recibo de Pago"
+                                            width="23px"></button>
+                                    Ver Recibo de Pago</a>
+                            </li>
+                            {% else %}
+
+                            <li>
+                                <a class="dropdown-item btn-ac" href="/ReciboPago/{{p.idPa}}" target="_blank"><button
+                                        type="button" class="btn btn-a btn-outline-dark btn-sm btn-bd-primary"><img
+                                            src="/static/img/PDF 2@2x.png" alt="Ver Recibo de Pago"
+                                            width="23px"></button>
+                                    Ver Recibo de Pago</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item btn-ra" data-bs-toggle="modal" href=""
+                                    data-bs-target="#eliminar{{p.idPa}}"><button type="button"
+                                        class="btn btn-r btn-outline-dark btn-sm btn-bd-primary"><img
+                                            src="/static/img/BASURA 2@2x.png" alt="Eliminar" width="23px"></button>
+                                    Eliminar</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+
+            <!-- Modal -->
+            <!-- Modal Eliminar-->
+            <div class="modal fade" id="eliminar{{p.idPa}}" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Eliminar</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/EliminarPago" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{csrf_token() }}">
+                                <input type="hidden" name="idPa" value="{{p.idPa}}">
+                                <img src="/static/img/PELIGRO 2@2x.png" alt="Ver Expediente" width="80px"
+                                    style=" float: left; margin-right: 30px; margin-left: 20px;">
+                                <p>
+                                    ¿Deseas eliminar este pago?
+                                <h5 style="color: black;"> "Residente: {{p.apellidoPRe}} {{p.apellidoMRe}}
+                                    {{p.nombreRe}}
+                                </h5>
+                                <h5>Cantidad: ${{p.montoPagos}} - Fecha: {{p.fechaPagos}}"</h5>
+                                </p>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light botoncolor"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-light botoncolor">Aceptar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL ACTUALIZAR MONTO -->
+            {% for cp in cp%}
+            <div class="modal fade" id="confirmacionMonto" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Confirmar</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <img src="/static/img/ADVERTENCIA 2@2x.png" alt="Nuevo Monto" width="80px"
+                                style=" float: left; margin-right: 30px; margin-left: 20px;">
+                            <p>
+                                ¿Estas seguro que desea modificar el monto a Pagar?
+                            <h4 style="color: black;"> "Monto Actual: ${{cp.nuevoMonto}}"
+                            </h4>
+                            </p>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light botoncolor"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button class="btn btn-light botoncolor" data-bs-target="#monto"
+                                    data-bs-toggle="modal">Aceptar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade modal-lg" id="monto" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Actualizar Monto</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/ActualizarMonto" method="POST" enctype="multipart/form-data">
+                                <input type="hidden" name="csrf_token" value="{{csrf_token() }}">
+                                <input type="hidden" name="antiguoMonto" value="{{cp.nuevoMonto}}">
+                                <br>
+                                <div class="container text-center">
+                                    <div class="row align-items-start">
+                                        <div class="col">
+                                        </div>
+                                        <div class="col">
+                                            <label for="validationDefault01" class="form-label">Nuevo Monto</label>
+                                            <input name="nuevoMonto" type="number" class="form-control border border-dark"
+                                                id="validationDefault01" value="{cp.nuevoMonto}}" />
+                                        </div>
+                                        <div class="col">
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light botoncolor"
+                                            data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-light botoncolor">Aceptar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% endfor %}
+
+
+
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

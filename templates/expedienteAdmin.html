@@ -1,0 +1,99 @@
+{% extends 'layout.html' %}
+{% block title %}Expediente Admin{% endblock %}
+{% block content %}
+
+<div style="color: #006a94;">
+    {% for a in admin %}
+    <table class="table text-center ">
+        <thead></thead>
+        <center>
+            <h2 style="color: #006a94;">Información del Administrador</h2>
+        </center>
+        <thead>
+            <tr style="color: #006a94;">
+                <th scope="col" colspan="9">Nombre Completo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="9">
+                    <h5>{{a.nombreAd}} {{a.apellidoPAd}} {{a.apellidoMAd}}</h5>
+                </td>
+            </tr>
+        </tbody>
+        <thead><tr></tr></thead>
+        <tbody><tr></tr></tbody>
+        <thead>
+            <tr style="color: #006a94;">
+                <th scope="col" colspan="9">Correo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="9">
+                    <h5>{{a.correoAd}}</h5>
+                </td>
+            </tr>
+        </tbody>
+        <thead>
+            <tr style="color: #006a94;">
+                <th scope="col">Telefono Celular</th>
+                <th scope="col">Telefono Casa</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <h5>{{a.telCelAd}}</h5>
+                </td>
+                <td>
+                    <h5>{{a.telCasaAd}}</h5>
+                </td>
+            </tr>
+        </tbody>
+        <thead>
+            <tr style="color: #006a94;">
+                <th scope="col" colspan="9">Privilegios</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="9">
+                    {% if a.priviAd == 1 %}
+                    <h5>Administrador</h5>
+                    {% else %}
+                    {% if a.priviAd == 2 %}
+                    <h5>Junior</h5>
+                    {% else %}
+                    <h5>Auxiliar</h5>
+                    {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+        <thead>
+            <tr style="color: #006a94;">
+                <th>Edad</th>
+                <th>Sexo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <h5>{{a.edadAd}}</h5>
+                </td>
+                <td>
+                    <h5>{{a.sexoAd}}</h5>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <h5 style="color: #006a94; text-align: center;">Convertir en PDF</h5>
+    <div style="text-align: center;">
+        <a class="dropdown-item" href="/PDFExpedienteAdministrador/{{a.idAd}}" target="_blank" style="height: 23px;"><button type="button"
+                class="btn btn-outline-dark btn-sm btn-bd-primary"><img src="/static/img/logo.png" alt=""
+                    height="23px"></button></a>
+    </div>
+    {%endfor%}
+</div>
+{% endblock %}

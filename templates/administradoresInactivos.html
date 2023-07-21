@@ -1,0 +1,114 @@
+{% extends 'layout.html' %}
+{% block title %}Ver Administradores Inactivos{% endblock %}
+{% block content %}
+
+<div>
+    <h1>Administradores {% for c in cuenta %}
+        {{c.cuenta}}
+        {% endfor %}</h1>
+    <br>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-info" role="alert" style="text-align: center;">
+        {{message}} <i class="fa-solid fa-thumbs-up"></i>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        </button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <div class="row">
+        <div class="col-4">
+            <form class="d-flex" role="search" action="/BuscarResidente" method="POST">
+                <input type="hidden" name="csrf_token" value="{{csrf_token() }}">
+                <input class="form-control mr-sm-2 border border-dark" type="text" placeholder="Buscar" name="busqueda"
+                    aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0"
+                    style="background-color: transparent; border-color: #006a94;" type="submit" value="submit"><img
+                        src="/static/img/buscar.svg" height="25px" width="25px"></button>
+            </form>
+        </div>
+    </div>
+    <br>
+    <table class="table">
+        <thead class="table" style="background-color: #006a94; color: white;">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Nombre(s)</th>
+                <th scope="col">Apellido Paterno</th>
+                <th scope="col">Apellido Materno</th>
+                <th scope="col">Rol</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {% for a in admin %}
+            <tr>
+                <th scope="row">{{a.idAd}}</th>
+                <td>{{a.nombreAd}}</td>
+                <td>{{a.apellidoPAd}}</td>
+                <td>{{a.apellidoMAd}}</td>
+                {% if a.priviAd == 1%}
+                <td>Administrador</td>
+                {% else %}
+                {% if a.priviAd == 2%}
+                <td>Junior</td>
+                {% else %}
+                <td>Auxiliar</td>
+                {% endif %}
+                {% endif %}
+                <td>
+                    <div class="btn-group dropend">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Acciones
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" data-bs-toggle="modal" href=""
+                                    data-bs-target="#activar{{a.idAd}}"><button type="button"
+                                        class="btn btn-outline-dark btn-sm btn-bd-primary"><img
+                                        src="/static/img/REACTIVAR 2@2x.png" alt="Ver Expediente" width="23px"></button> Activar</a>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+
+            <!-- MODAL ACTIVAR -->
+            <div class="modal fade" id="activar{{a.idAd}}" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Activar</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/ActivarAdministrador" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{csrf_token() }}">
+                                <input type="hidden" name="idAd" value="{{a.idAd}}">
+                                <i class="fas fa-exclamation-circle iconogrande"
+                                    style="font-size: 80px; color: red; float: left; margin-right: 30px; margin-left: 20px;"></i>
+                                <p>
+                                    ¿Deseas dar activar a este administrador?
+                                <h4> "{{a.apellidoPAd}} {{a.apellidoMAd}}
+                                    {{a.nombreAd}}"
+                                </h4>
+                                </p>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light botoncolor"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-light botoncolor">Aceptar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

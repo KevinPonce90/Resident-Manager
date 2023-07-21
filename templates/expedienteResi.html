@@ -1,0 +1,117 @@
+{% extends 'layout.html' %}
+{% block title %}Expediente Residente{% endblock %}
+{% block content %}
+
+<body>
+    
+</body>
+<div style="color: #006a94;">
+    {% for r in residente %}
+    <table class="table text-center ">
+        <thead></thead>
+        <center>
+            <h2 style="color: #006a94;">Información del Residente</h2>
+        </center>
+        <thead>
+            <tr style="color: #006a94;">
+                <th scope="col" colspan="9">Nombre Completo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="9">
+                    <h5>{{r.nombreRe}} {{r.apellidoPRe}} {{r.apellidoMRe}}</h5>
+                </td>
+            </tr>
+        </tbody>
+        <thead>
+            <tr style="color: #006a94;">
+                <th scope="col">Telefono Celular</th>
+                <th scope="col">Telefono Casa</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <h5>{{r.telCelRe}}</h5>
+                </td>
+                <td>
+                    <h5>{{r.telCasaRe}}</h5>
+                </td>
+            </tr>
+        </tbody>
+        <thead>
+            <tr style="color: #006a94;">
+                <th>Edad</th>
+                <th>Sexo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <h5>{{r.edadRe}}</h5>
+                </td>
+                <td>
+                    <h5>{{r.sexoRe}}</h5>
+                </td>
+            </tr>
+        </tbody>
+        <thead>
+            <tr style="color: #006a94;">
+                <th scope="col" colspan="">Domicilio</th>
+                <th scope="col">Codigo Postal
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <h5>{{r.calleRe}} {{r.numExtRe}}</h5>
+                </td>
+                <td>
+                    <h5>{{r.cpRe}}</h5>
+                </td>
+            </tr>
+        </tbody>
+        <thead>
+            <tr style="color: #006a94;">
+                <th scope="col" colspan="">Entre Calle 1</th>
+                <th scope="col">Entre Calle 2
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <h5>{{r.entreCalle1}}</h5>
+                </td>
+                <td>
+                    <h5>{{r.entreCalle2}}</h5>
+                </td>
+            </tr>
+        </tbody>
+        <thead>
+            <tr style="color: #006a94;">
+                <th>Municipio</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <h5>{{r.municipioRe}}</h5>
+                </td>
+                <td>
+                    <h5>{{r.estadoRe}}</h5>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <h5 style="color: #006a94; text-align: center;">Convertir en PDF</h5>
+    <div style="text-align: center;">
+        <a class="dropdown-item" href="/PDFExpedienteResidente/{{r.idRe}}" target="_blank"><button type="button"
+                class="btn btn-outline-dark btn-sm btn-bd-primary"><img src="/static/img/logo.png" alt="" height="23px"></button></a>
+    </div>
+    {%endfor%}
+</div>
+{% endblock %}

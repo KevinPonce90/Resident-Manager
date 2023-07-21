@@ -1,0 +1,75 @@
+{% extends 'layout.html' %}
+{% block title %}Historial de Pagos{% endblock %}
+{% block content %}
+
+<div>
+    {% for hp in hp %}
+    <h1>Historial de Pagos</h1>
+    <br>
+    <h4>Nombre del Titular: {{hp.nombreRe}} {{hp.apellidoPRe}} {{hp.apellidoMRe}}</h4>
+    <h4>Domicilio del Titular: {{hp.calleRe}} #{{hp.numExtRe}}, CP:{{hp.cpRe}}, {{hp.municipioRe}}, {{hp.estadoRe}}</h4>
+    <br>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-info" role="alert" style="text-align: center;">
+        {{message}} <i class="fa-solid fa-thumbs-up"></i>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        </button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <div class="row">
+        <div class="col-4">
+            <form class="d-flex" role="search" action="/BuscarPagos" method="POST">
+                <input type="hidden" name="csrf_token" value="{{csrf_token() }}">
+                <input class="form-control mr-sm-2 border border-dark" type="text" placeholder="Buscar" name="busqueda"
+                    aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0"
+                    style="background-color: transparent; border-color: black;" type="submit" value="submit"><img
+                        src="/static/img/buscar.svg" height="25px" width="25px"></button>
+            </form>
+        </div>
+    </div>
+    <br>
+    <table class="table">
+        <thead class="table" style="background-color: #006a94; color: white;">
+            <tr>
+                <th scope="col">Fecha y Hora de Pago</th>
+                <th scope="col">Nombre Quien Pago</th>
+                <th scope="col">Nombre Administrador Recibio</th>
+                <th scope="col">Monto</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+
+            <tr>
+                <td>{{hp.fechaPagos}} - {{hp.horaPagos}}</td>
+                <td>{{hp.nombrePPa}}</td>
+                <td>{{hp.nombreAd}}</td>
+                <td>${{hp.montoPagos}}</td>
+                <td>
+                    <div class="btn-group dropend">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Acciones
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="/ReciboPago/{{hp.idPa}}" target="_blank"><button
+                                        type="button" class="btn btn-outline-dark btn-sm btn-bd-primary"><i
+                                            class="fa-regular fa-pen-to-square"
+                                            style="font-size: 23px; color: cornflowerblue;"></i></button>
+                                    Ver Recibo de Pago</a>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    {% endfor %}
+</div>
+{% endblock %}

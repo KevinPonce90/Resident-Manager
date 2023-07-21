@@ -1,0 +1,127 @@
+{% extends 'layoutAgregar.html' %}
+{% block title %}Agregar Residente{% endblock %}
+{% block content %}
+
+<div class="card text-center border-primary">
+    <div class="card-header" style="background-color: #006a94;">
+        <h3 style="color: #fff;">Registrar Residente</h3>
+    </div>
+    <div class="card-body">
+        <form class="row g-3" action="/AgregarResidente" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{csrf_token() }}">
+            <div></div>
+            <div class="col-md-4">
+                <label for="validationDefault01" class="form-label">Nombre</label>
+                <input name="nombreRe" type="text" class="form-control border border-dark" id="validationDefault01"
+                    value="" required
+                    pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{2,35}"
+                    title="Solo letras Minimo 2 Maximo 35" />
+            </div>
+            <div class="col-md-4">
+                <label for="validationDefault02" class="form-label">Apellido Paterno</label>
+                <input name="apellidoPRe" type="text" class="form-control border border-dark" id="validationDefault02"
+                    value="" required
+                    pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{2,25}"
+                    title="Solo letras Minimo 2 Maximo 25" />
+            </div>
+            <div class="col-md-4">
+                <label for="validationDefault02" class="form-label">Apellido Materno</label>
+                <input name="apellidoMRe" type="text" class="form-control border border-dark" id="validationDefault02"
+                    value="" required
+                    pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{2,25}"
+                    title="Solo letras Minimo 2 Maximo 25" />
+            </div>
+            <div></div>
+            <div class="row justify-content-evenly">
+                <div class="col-4">
+                    <label for="validationDefault02" class="form-label">Sexo</label>
+                    <select name="sexoRe" class="form-select border border-dark" aria-label="Default select example"
+                        required title="Selecione una opción">
+                        <option value="">Selecciona Uno...</option>
+                        <option value="Hombre">Hombre</option>
+                        <option value="Mujer">Mujer</option>
+                        <option value="Otro">Prefiero no decirlo</option>
+                    </select>
+                </div>
+                <div class="col-4">
+                    <label for="validationDefault02" class="form-label">Edad</label>
+                    <input name="edadRe" type="number" class="form-control border border-dark" id="validationDefault02"
+                        value="" required min="18" max="100" />
+                </div>
+            </div>
+            <div></div>
+            <div class="row justify-content-evenly">
+                <div class="col-4">
+                    <label for="validationDefault01" class="form-label">Telefono Casa</label>
+                    <input name="telCasaRe" type="text" class="form-control border border-dark" id="validationDefault01"
+                        value="" required pattern="^(\+|00)[1-9][0-9 \-\(\)\.]{10,15}$"
+                        title="Numero con lada, maximo 16 digitos" />
+                </div>
+                <div class="col-4">
+                    <label for="validationDefault02" class="form-label">Telefono Celular</label>
+                    <input name="telCelRe" type="text" class="form-control border border-dark" id="validationDefault02"
+                        value="" required pattern="^(\+|00)[1-9][0-9 \-\(\)\.]{10,15}$"
+                        title="Numero con lada, maximo 16 digitos" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="validationDefault02" class="form-label">Calle</label>
+                <input name="calleRe" type="text" class="form-control border border-dark" id="validationDefault02"
+                    value="" required pattern="[a-zA-Z0-9áäéëíóöúüñÑ,'\- ]{4,35}"
+                    title="No caracteres especiales y la longitud debe de ser 4 a 35 caracteres" />
+            </div>
+            <div class="col-md-4">
+                <label for="validationDefault02" class="form-label">Numero Exterior</label>
+                <input name="numExtRe" type="number" class="form-control border border-dark" id="validationDefault02"
+                    value="" required min="1" max="99999" />
+            </div>
+            <div class="col-md-4">
+                <label for="validationDefault02" class="form-label">Codigo Postal</label>
+                <input name="cpRe" type="text" class="form-control border border-dark" id="validationDefault02" value=""
+                    required pattern="\d{5}" title="Solo números y deben de ser 5 digitos" />
+            </div>
+            <div></div>
+            <div class="row justify-content-evenly">
+                <div class="col-4">
+                    <label for="validationDefault01" class="form-label">Entre Calle 1</label>
+                    <input name="calle1" type="text" class="form-control border border-dark" id="validationDefault01"
+                        value="" required pattern="[a-zA-Z0-9áäéëíóöúüñÑ,'\- ]{4,35}"
+                        title="No caracteres especiales y la longitud debe de ser 4 a 35 caracteres" />
+                </div>
+                <div class="col-4">
+                    <label for="validationDefault02" class="form-label">Entre Calle 2</label>
+                    <input name="calle2" type="text" class="form-control border border-dark" id="validationDefault02"
+                        value="" required pattern="[a-zA-Z0-9áäéëíóöúüñÑ,'\- ]{4,35}"
+                        title="No caracteres especiales y la longitud debe de ser 4 a 35 caracteres" />
+                </div>
+            </div>
+            <div></div>
+            <div class="row justify-content-evenly">
+                <div class="col-4">
+                    <label for="validationDefault02" class="form-label">Estado</label>
+                    <input name="estadoRe" type="text" class="form-control border border-dark" id="validationDefault02"
+                        value="" required pattern="[a-zA-Zaáeéiíoóuú ]{6,20}"
+                        title="No caracteres especiales y la longitud debe de ser 6 a 20 caracteres" />
+                </div>
+                <div class="col-4">
+                    <label for="validationDefault03" class="form-label">Municipio</label>
+                    <input name="municipioRe" type="text" class="form-control border border-dark"
+                        id="validationDefault03" required pattern="[a-zA-Z1-9áäéëíóöúüñÑ .-]{5,25}"
+                        title="No caracteres especiales y la longitud debe de ser 5 a 25 caracteres" />
+                </div>
+            </div>
+            <div></div>
+            <div class="row">
+                <div class="col-auto me-auto"></div>
+                <div class="col-auto"><a href="/VerResidente">
+                        <button class="btn btn-secondary col-auto slide-fwd-center" type="button">Cancelar</button>
+                    </a></div>
+                <div class="col-auto">
+                    <button class="btn btn-primary col-auto slide-fwd-center" type="submit">Enviar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

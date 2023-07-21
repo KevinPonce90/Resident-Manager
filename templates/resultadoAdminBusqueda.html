@@ -1,0 +1,355 @@
+{% extends 'layout.html' %}
+{% block title %}Ver Administradores{% endblock %}
+{% block content %}
+
+<div>
+    <h1>Administradores</h1>
+    <br>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-info" role="alert" style="text-align: center;">
+        {{message}} <i class="fa-solid fa-thumbs-up"></i>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        </button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <div class="row">
+        <div class="col-md-4 ">
+            <a href="{{url_for('agregarAdministrador')}}" class="saber">Agregar Administrador</a>
+        </div>
+        <div class="col-md-4 ms-auto">
+            <form class="d-flex" role="search" action="/BuscarResidente" method="POST">
+                <input type="hidden" name="csrf_token" value="{{csrf_token() }}">
+                <input class="form-control mr-sm-2 border border-dark" type="text" placeholder="Buscar" name="busqueda"
+                    aria-label="Search" required
+                    pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{1,50}"
+                    title="Solo letras, maximo 50" />
+                <button class="btn btn-outline-success my-2 my-sm-0"
+                    style="background-color: transparent; border-color: black;" type="submit" value="submit"><img
+                        src="/static/img/buscar.svg" height="25px" width="25px"></button>
+            </form>
+        </div>
+    </div>
+    <br>
+    <table class="table">
+        <thead class="table" style="background-color: #006a94; color: white;">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Nombre(s)</th>
+                <th scope="col">Apellido Paterno</th>
+                <th scope="col">Apellido Materno</th>
+                <th scope="col">Rol</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {% for a in admin %}
+            <tr>
+                <th scope="row">{{a.idAd}}</th>
+                <td>{{a.nombreAd}}</td>
+                <td>{{a.apellidoPAd}}</td>
+                <td>{{a.apellidoMAd}}</td>
+                {% if a.priviAd == 1%}
+                <td>Administrador</td>
+                {% else %}
+                {% if a.priviAd == 2%}
+                <td>Junior</td>
+                {% else %}
+                <td>Auxiliar</td>
+                {% endif %}
+                {% endif %}
+                <td>
+                    <div class="btn-group dropend">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Acciones
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="/VerExpedienteAdministrador/{{a.idAd}}"
+                                    target="_blank"><button type="button"
+                                        class="btn btn-outline-dark btn-sm btn-bd-primary"><img
+                                            src="/static/img/CARPETA 2@2x.png" alt="Ver Expediente"
+                                            width="23px"></button>
+                                    Ver Expediente</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" data-bs-toggle="modal" href=""
+                                    data-bs-target="#confirmacion{{a.idAd}}"><button type="button"
+                                        class="btn btn-outline-dark btn-sm btn-bd-primary"><i
+                                            class="fa-regular fa-pen-to-square"
+                                            style="font-size: 23px; color: cornflowerblue;"></i></button>
+                                    Actualizar</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" data-bs-toggle="modal" href=""
+                                    data-bs-target="#eliminar{{a.idAd}}"><button type="button"
+                                        class="btn btn-outline-dark btn-sm btn-bd-primary"><img
+                                            src="/static/img/BASURA@1.0x.png" alt="Eliminar" width="23px"></button>
+                                    Eliminar</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" data-bs-toggle="modal" href=""
+                                    data-bs-target="#confirmacontra{{a.idAd}}"><button type="button"
+                                        class="btn btn-outline-dark btn-sm btn-bd-primary"><img
+                                            src="/static/img/BASURA@1.0x.png" alt="Eliminar" width="23px"></button>
+                                    Cambiar Constraseña</a>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+
+            <!-- MODAL ELIMINAR -->
+            <div class="modal fade" id="eliminar{{a.idAd}}" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Eliminar</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/EliminarAdministrador" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{csrf_token() }}">
+                                <input type="hidden" name="idAd" value="{{a.idAd}}">
+                                <i class="fas fa-exclamation-circle iconogrande"
+                                    style="font-size: 80px; color: red; float: left; margin-right: 30px; margin-left: 20px;"></i>
+                                <p>
+                                    ¿Deseas dar de baja a este administrador?
+                                <h4> "{{a.apellidoPAd}} {{a.apellidoMAd}}
+                                    {{a.nombreAd}}"
+                                </h4>
+                                </p>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light botoncolor"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-light botoncolor">Aceptar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL ACTUALIZAR -->
+
+            <!-- MODAL CONFIRMACION -->
+            <div class="modal fade" id="confirmacion{{a.idAd}}" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Confirmar</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="idAd" value="{{a.idAd}}">
+                            <i class="fa-solid fa-triangle-exclamation iconogrande"
+                                style="font-size: 80px; color: gold; float: left; margin-right: 30px; margin-left: 20px;"></i>
+                            <p>
+                                ¿Estas seguro que desea modificar a este administrador?
+                            <h4 style="color: black;"> "{{a.apellidoPAd}} {{a.apellidoMAd}}
+                                {{a.nombreAd}}"
+                            </h4>
+                            </p>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light botoncolor"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button class="btn btn-light botoncolor" data-bs-target="#actualizar{{a.idAd}}"
+                                    data-bs-toggle="modal">Aceptar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade modal-lg" id="actualizar{{a.idAd}}" data-bs-backdrop="static"
+                data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Actualizar Datos Administrador</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/ActualizarAdministrador" method="POST" enctype="multipart/form-data">
+                                <input type="hidden" name="csrf_token" value="{{csrf_token() }}">
+                                <input type="hidden" name="idAd" value="{{a.idAd}}">
+                                <h2 style="text-align: center;">Datos Personales</h2>
+                                <br>
+                                <div class="container text-center">
+                                    <div class="row align-items-start">
+                                        <div class="col">
+                                            <label for="validationDefault01" class="form-label">Nombre(s)</label>
+                                            <input name="nombreAd" type="text" class="form-control border border-dark"
+                                                id="validationDefault01" value="{{a.nombreAd}}" required
+                                                pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'\-]{2,35}"
+                                                title="Solo letras Minimo 2 Maximo 35" />
+                                        </div>
+                                        <div class="col">
+                                            <label for="validationDefault01" class="form-label">Apellido
+                                                Paterno</label>
+                                            <input name="apellidoPAd" type="text"
+                                                class="form-control border border-dark" id="validationDefault01"
+                                                value="{{a.apellidoPAd}}" required
+                                                pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'\-]{2,25}"
+                                                title="Solo letras Minimo 2 Maximo 25" />
+
+                                        </div>
+                                        <div class="col">
+                                            <label for="validationDefault01" class="form-label">Apellido
+                                                Materno</label>
+                                            <input name="apellidoMAd" type="text"
+                                                class="form-control border border-dark" id="validationDefault01"
+                                                value="{{a.apellidoMAd}}" required
+                                                pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'\-]{2,25}"
+                                                title="Solo letras Minimo 2 Maximo 25" />
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row justify-content-evenly">
+                                        <div class="col-4">
+                                            <label for="validationDefault01" class="form-label">Telefono
+                                                Fijo</label>
+                                            <input name="telCasaAd" type="text" class="form-control border border-dark"
+                                                id="validationDefault01" value="{{a.telCasaAd}}" required
+                                                pattern="^(\+|00)[1-9][0-9 \-\(\)\.]{10,15}$"
+                                                title="Numero con lada, maximo 16 digitos" />
+                                        </div>
+                                        <div class="col-4">
+                                            <label for="validationDefault01" class="form-label">Telefono
+                                                Celular</label>
+                                            <input name="telCelAd" type="text" class="form-control border border-dark"
+                                                id="validationDefault01" value="{{a.telCelAd}}" required
+                                                pattern="^(\+|00)[1-9][0-9 \-\(\)\.]{10,15}$"
+                                                title="Numero con lada, maximo 16 digitos" />
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row justify-content-evenly">
+                                        <div class="col-4">
+                                            <label for="validationDefault02" class="form-label">Sexo</label>
+                                            <select name="sexoAd" class="form-select border border-dark"
+                                                aria-label="Default select example">
+                                                <option value="{{a.sexoAd}}">Selecciona Uno...</option>
+                                                <option value="Hombre">Hombre</option>
+                                                <option value="Mujer">Mujer</option>
+                                                <option value="Otro">Prefiero no decirlo</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-4">
+                                            <label for="validationDefault01" class="form-label">Edad</label>
+                                            <input name="edadAd" type="number" class="form-control border border-dark"
+                                                id="validationDefault01" value="{{a.edadAd}}" required min="18"
+                                                max="100" />
+                                        </div>
+                                    </div>
+                                    <br><br>
+                                    <h2 style="text-align: center;">Datos de Ingreso</h2>
+                                    <br>
+                                    <div class="row align-items-start">
+                                        <div class="col">
+                                            <label for="validationDefault01" class="form-label">Correo</label>
+                                            <input name="correoAd" type="email" class="form-control border border-dark"
+                                                id="validationDefault01" value="{{a.correoAd}}" required
+                                                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]$" size="29"
+                                                title="Correo inavlido" />
+                                        </div>
+                                        <div class="col">
+                                            <label for="validationDefault02" class="form-label">Privilegios</label>
+                                            <select name="priviAd" class="form-select border border-dark"
+                                                aria-label="Default select example">
+                                                <option value="{{a.priviAd}}">Selecciona Uno...</option>
+                                                <option value="1">Administrador</option>
+                                                <option value="2">Junior</option>
+                                                <option value="3">Auxiliar</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light botoncolor"
+                                            data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-light botoncolor">Aceptar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL CONTRA -->
+            <!-- CONFIRMACION -->
+            <div class="modal fade" id="confirmacontra{{a.idAd}}" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Confirmar</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="idAd" value="{{a.idAd}}">
+                            <i class="fa-solid fa-triangle-exclamation iconogrande"
+                                style="font-size: 80px; color: gold; float: left; margin-right: 30px; margin-left: 20px;"></i>
+                            <p>
+                                ¿Estas seguro que desea modificar la contraseña a este administrador?
+                            <h4 style="color: black;"> "{{a.apellidoPAd}} {{a.apellidoMAd}}
+                                {{a.nombreAd}}"
+                            </h4>
+                            </p>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light botoncolor"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button class="btn btn-light botoncolor" data-bs-target="#contra{{a.idAd}}"
+                                    data-bs-toggle="modal">Aceptar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CAMBIAR CONTRA  -->
+            <div class="modal fade modal-lg" id="contra{{a.idAd}}" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Actualizar Contraseña</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/CambiarContra" method="POST" enctype="multipart/form-data">
+                                <input type="hidden" name="csrf_token" value="{{csrf_token() }}">
+                                <input type="hidden" name="idAd" value="{{a.idAd}}">
+                                <br>
+                                <div class="container text-center">
+                                    <div class="row align-items-start">
+                                        <div class="col">
+                                            <label for="validationDefault01" class="form-label">Contraseña Nueva</label>
+                                            <input name="passAd" type="password" class="form-control border border-dark"
+                                                id="validationDefault01" required
+                                                pattern="^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$" />
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light botoncolor"
+                                            data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-light botoncolor">Aceptar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
